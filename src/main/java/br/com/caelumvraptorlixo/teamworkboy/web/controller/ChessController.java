@@ -38,10 +38,6 @@ public class ChessController {
 		result.redirectTo(ChessController.class).board();
 	}
 	
-	public void menu() {
-		System.out.println("Iniciando...");
-	}
-	
 	public void board() {
 		
 		//GameController gc = (GameController) result.included().get("gc");
