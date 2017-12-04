@@ -47,13 +47,14 @@
             }
 
             footer {
-
                 position: absolute;
                 bottom: 0;
                 width: 100%;
             }
 
             .footer-note {
+                margin: 0 auto;
+                width: 50%;
                 font-family: sans-serif;
                 font-size: 0.65em;
             }
@@ -72,9 +73,7 @@
 
         <section>
             <div class="button-group">
-            	<form method="get" action="http://localhost:8080/webchess/chess/init">
-                	<button id="player">Jogador</button>
-                </form>
+                <button id="player" onclick="callInit(this)">Jogador</button>
                 <button>Gerente</button>
             </div>
         </section>
@@ -84,6 +83,19 @@
                 - Matheus T P Alves</p>
         </footer>
 
+
+        <script>
+            function callInit() {
+                // var xhttp = new XMLHttpRequest();
+                // xhttp.open("GET", "http://localhost:8080/webchess/chess/board", true);
+                // xhttp.send().open();
+
+                var w = window.open("http://localhost:8080/webchess/chess/board");
+                    $(w.document).open();
+                $(w.document.body).html(response);
+                $(w.document).close();
+            }
+        </script>
     </body>
 
     </html>
