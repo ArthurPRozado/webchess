@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class TurnGame {
 
+	private int winnerId = -1;
+	
 	private ArrayList < Player > players;
 	private ArrayList < Turn > turns = new ArrayList < Turn > ();
 	
@@ -27,5 +29,13 @@ public class TurnGame {
 	public ArrayList < Turn > getTurns () {
 		
 		return this.turns;
+	}
+
+	public int getWinnerId() {
+		return winnerId;
+	}
+
+	public void setWinnerId(int winnerId) {
+		this.winnerId = winnerId;
 	}
 }

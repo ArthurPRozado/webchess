@@ -9,6 +9,7 @@ public class TurnFlow {
 	public static final int NEXT_TURN = 0;
 	public static final int CURRENT_WON = 10;
 	public static final int CURRENT_LOST = 20;
+	public static final int GAME_OVER = 30;
 	
 	public static final int FAILED = -10;
 	public static final int NON_VALID = -20;
@@ -23,6 +24,11 @@ public class TurnFlow {
 	public final ArrayList < Slot > selectedPieceMoves = new ArrayList < Slot > ();
 	
 	private TurnGame game;
+	
+	private boolean gameOver = false;
+	
+	private Piece white;
+	private Piece black;
 	
 	public boolean hasSelection () {
 		
@@ -69,12 +75,20 @@ public class TurnFlow {
 		this.unselect ();
 		
 		this.game = new TurnGame ( this.players );
+		this.gameOver = false;
+		
+		this.white = this.getPieceByType(0, Pieces.KING);
+		this.black = this.getPieceByType(1, Pieces.KING);
 	}
 	
 	public int next () {
 		
 		try {
 
+			System.out.println ( "GAME OVER " + this.gameOver );
+			
+			if ( this.gameOver ) { return GAME_OVER; }
+			
 			this.game.addTurn ( new Turn ( this.current, this.currentId, this.board.getClone () ) );
 			
 			this.currentId++;
@@ -94,10 +108,23 @@ public class TurnFlow {
 				
 				if ( condition.Confirm () ) {
 					
+					this.gameOver = true;
+					
 					return CURRENT_LOST;
 				}
 			}
 			
+			Piece king = this.getPieceByType ( this.currentId, Pieces.KING );
+			
+			System.out.println ( "Has King " + this.hasPiece ( king ) );
+			
+			if ( ! this.hasPiece ( king ) ) {
+
+				this.gameOver = true;
+					
+				return CURRENT_LOST;
+			}
+				
 			return NEXT_TURN;
 			
 		} catch ( Exception e ) {
@@ -106,6 +133,45 @@ public class TurnFlow {
 		}
 		
 		return FAILED;
+	}
+	
+	private boolean hasPiece ( Piece piece ) {
+		
+		for ( int x = 0; x < 8; x++ ) {
+			
+			for ( int y = 0; y < 8; y++ ) {
+				
+				if ( piece == this.board.getSlot(x, y).getPiece() ) {
+					
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	public Piece getPieceByType ( int team, Pieces type ) {
+
+		for ( int x = 0; x < 8; x++ ) {
+			
+			for ( int y = 0; y < 8; y++ ) {
+				
+				Piece piece = this.board.getSlot(x, y).getPiece();
+				
+				if ( piece == null ) { continue; }
+				
+				if ( piece.getType() == type ) {
+					
+					if ( piece.getTeam() == team ) {
+						
+						return piece;
+					}
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	public ArrayList < Slot > getMoves ( int x, int y ) {
@@ -142,6 +208,8 @@ public class TurnFlow {
 		
 		try {
 			
+			if ( this.gameOver ) { return GAME_OVER; }
+			
 			if ( this.selectedSlot == null ) { return FAILED; }
 			if ( this.selectedPiece == null ) { return FAILED; }
 			//if ( ! this.selectedPieceMoves.contains ( goal ) ) { return NON_VALID; }
@@ -170,8 +238,27 @@ public class TurnFlow {
 				
 				if ( condition.Confirm () ) {
 					
+					this.gameOver = true;
+					this.game.setWinnerId ( currentId );
+					
 					return CURRENT_WON;
 				}
+			}
+			
+			if ( dead == this.white ) {
+
+				this.gameOver = true;
+				this.game.setWinnerId ( currentId );
+				
+				return CURRENT_WON;
+			}
+			
+			if ( dead == this.black ) {
+
+				this.gameOver = true;
+				this.game.setWinnerId ( currentId );
+				
+				return CURRENT_WON;
 			}
 			
 			return this.next ();
@@ -203,26 +290,6 @@ public class TurnFlow {
 		}
 		
 		return new ArrayList < Axis > ();
-	}
-	
-	private boolean containsAxis ( Axis other, ArrayList < Axis > axis ) {
-
-		try {
-			
-			System.out.println( "Other " + other.x + " " + other.y );
-			
-			for ( int index = 0; index < axis.size(); index++ ) {
-				
-				System.out.println( "Axis " + axis.get ( index ).x + " " + axis.get ( index ).y );
-				if ( other.compare ( axis.get ( index ) ) ) { return true; }
-			}
-			
-		} catch ( Exception e ) {
-			
-			e.printStackTrace();
-		}
-		
-		return false;
 	}
 	
 	public void killPiece ( Piece dead, Player owner ) {

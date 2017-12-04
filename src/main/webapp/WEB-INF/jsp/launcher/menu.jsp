@@ -72,7 +72,9 @@
 
         <section>
             <div class="button-group">
-                <button id="player">Jogador</button>
+            	<form method="get" action="http://localhost:8080/webchess/chess/init">
+                	<button id="player">Jogador</button>
+                </form>
                 <button>Gerente</button>
             </div>
         </section>
