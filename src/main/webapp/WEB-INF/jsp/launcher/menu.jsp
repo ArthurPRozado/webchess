@@ -12,7 +12,7 @@
             }
 
             header {
-                margin: 25px 0 0 25px;
+                margin: 3.25520833% 0 0 25px;
             }
 
             #logo {
@@ -86,11 +86,7 @@
 
         <script>
             function callInit() {
-                // var xhttp = new XMLHttpRequest();
-                // xhttp.open("GET", "http://localhost:8080/webchess/chess/board", true);
-                // xhttp.send().open();
-
-                var w = window.open("http://localhost:8080/webchess/chess/board");
+                var w = window.location.replace("http://localhost:8080/webchess/chess/init");
                     $(w.document).open();
                 $(w.document.body).html(response);
                 $(w.document).close();
